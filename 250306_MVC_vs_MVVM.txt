@@ -1,0 +1,49 @@
+# MVC vs MVVM
+
+## 1. MVC (Model-View-Controller)
+**구조:**  
+- **Model**: 데이터 및 비즈니스 로직  
+- **View**: 사용자 인터페이스(UI)  
+- **Controller**: 입력을 받아 Model과 View를 연결  
+
+**특징:**  
+- View와 Model이 직접 연결되지 않음  
+- Controller가 사용자 입력을 처리하고 Model을 업데이트  
+- View는 Model에서 데이터를 받아 UI를 갱신  
+
+**사용 예시:**  
+- 웹 개발 (Spring MVC, ASP.NET MVC)  
+- iOS 개발 (UIKit)  
+
+---
+
+## 2. MVVM (Model-View-ViewModel)
+**구조:**  
+- **Model**: 데이터 및 비즈니스 로직  
+- **View**: 사용자 인터페이스(UI)  
+- **ViewModel**: Model과 View를 연결하고 데이터 바인딩 관리  
+
+**특징:**  
+- View와 Model이 직접 연결되지 않음  
+- ViewModel이 View와 Model 사이에서 데이터와 로직을 관리  
+- 데이터 바인딩을 통해 UI 자동 업데이트  
+
+**사용 예시:**  
+- WPF, Xamarin  
+- Android (Jetpack Compose + ViewModel)  
+- SwiftUI  
+
+---
+
+## 3. MVC vs MVVM 비교
+
+| 비교 항목  | MVC  | MVVM |
+|-----------|------|------|
+| 중재 역할 | Controller | ViewModel |
+| 데이터 바인딩 | 없음 (수동 갱신) | 있음 (자동 갱신) |
+| 코드 복잡도 | 비교적 간단 | 다소 복잡 |
+| 재사용성 | 낮음 | 높음 |
+
+### **결론**
+- **MVC**: 전통적인 UI 패턴, 웹 및 간단한 앱에 적합  
+- **MVVM**: 데이터 바인딩을 활용하는 UI 개발에 적합, 유지보수성이 높음  
