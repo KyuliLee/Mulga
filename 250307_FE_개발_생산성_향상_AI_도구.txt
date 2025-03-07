@@ -1,0 +1,20 @@
+# 250307 FE 개발 생산성 향상 AI 도구  
+
+## **[Gemini Code Assist](https://codeassist.google/products/business)**  
+- 무료 모델 포함, 필요시 과금 가능  
+
+## **[AWS CodeWhisperer](https://aws.amazon.com/ko/q/developer/)**  
+- Amazon Q 생태계에 포함  
+- 완전 무료는 아니고 API 통한 과금  
+
+## **[AiCodeHelper](https://aicodehelper.dev/)**  
+- ChatGPT 기반  
+- 프롬프트 창이 아닌 에디터 창에서 직접적으로 질의 가능  
+
+## **[MakeReal](https://makereal.tldraw.com/)**  
+- 프롬프트뿐만 아니라 시각적인 그림으로도 명령 가능  
+
+## **Draw Fast**  
+- 그림을 그리면 실시간으로 퀄리티를 상승시켜 변환해 줌  
+- FAL API 기반  
+- 더 이상 서비스되지 않으며, [GitHub](https://github.com/tldraw/draw-fast)에서 소스를 받아 로컬에서 실행해야 함  
