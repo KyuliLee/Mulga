@@ -1,0 +1,74 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+public class Main {
+	
+	static int N, M, output;
+	static char[][] arr;
+	static boolean[][][] visit;
+	static final int[] dy = {-1, 0, 1, 0};
+	static final int[] dx = {0, 1, 0, -1};
+	
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer tokens = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(tokens.nextToken());
+		M = Integer.parseInt(tokens.nextToken());
+		arr = new char[N][M];
+		for (int i = 0; i < N; i++) {
+			arr[i] = br.readLine().toCharArray();
+		}
+		visit = new boolean[N][M][64];
+		bfs();
+		System.out.println(output);
+	}
+	
+	static void bfs() {
+		Queue<int[]> q = new LinkedList<>();
+		outer:
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < M; j++) {
+				if (arr[i][j] == '0') {
+					q.offer(new int[] {i, j, 0});
+					break outer;
+				}
+			}
+		}
+		int cnt = 0;
+		while (!q.isEmpty()) {
+			int size = q.size();
+			for (int i = 0; i < size; i++) {
+				int[] tmp = q.poll();
+				int r = tmp[0];
+				int c = tmp[1];
+				int k = tmp[2];
+				if (r < 0 || r >= N || c < 0 || c >= M || visit[r][c][k]) {
+					continue;
+				}
+				visit[r][c][k] = true;
+				if (arr[r][c] == '#') {
+					continue;
+				} else if (arr[r][c] == '1') {
+					output = cnt;
+					return;
+				} else if (arr[r][c] >= 'a') {
+					k = k | (1 << (arr[r][c] - 'a'));
+				} else if (arr[r][c] >= 'A'){
+					int d = 1 << (arr[r][c] - 'A');
+					if ((d & k) == 0) {
+						continue;
+					}
+				}
+				for (int j = 0; j < 4; j++) {
+					q.offer(new int[] {r + dy[j], c + dx[j], k});
+				}
+			}
+			cnt++;
+		}
+		output = -1;
+	}
+}
