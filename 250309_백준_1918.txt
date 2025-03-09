@@ -1,0 +1,53 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
+
+public class Main {
+	
+	static Map<Character, Integer> map = new HashMap<>();
+	
+	static {
+		map.put('+', 1);
+		map.put('-', 1);
+		map.put('*', 2);
+		map.put('/', 2);
+		map.put('(', 0);
+	}
+	
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		System.out.println(convert(br.readLine()));
+	}
+	
+	static StringBuilder convert(String in) {
+		StringBuilder sb = new StringBuilder();
+		Stack<Character> stack = new Stack<>();
+		char c;
+		char top;
+		for (int i = 0; i < in.length(); i++) {
+			c = in.charAt(i);
+			if (c >= 'A' && c <= 'Z') {
+				sb.append(c);
+			} else if (c == '(') {
+				stack.push('(');
+			} else if (c == ')') {
+				while ((top = stack.pop()) != '(') {
+					sb.append(top);
+				}
+			} else {
+				while (!stack.isEmpty() && map.get(stack.peek()) >= map.get(c)) {
+					sb.append(stack.pop());
+				}
+				stack.push(c);
+			}
+		}
+		while (!stack.isEmpty()) {
+			sb.append(stack.pop());
+		}
+		return sb;
+	}
+
+}
