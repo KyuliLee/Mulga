@@ -2,10 +2,10 @@
 
 ### 완료한 일
 - 안드로이드 스튜디오, react native cli 실행, 에뮬레이터 실행
-- NotificationListenerService를 이용해 로그 기록록
-<img src="images/push-alarm-and-command.png" alt="이미지" width="700"/>
-<img src="images/push-alarm-emulator.png" alt="이미지" width="700"/>
-<img src="images/log-by-NotificationListenerService.png" alt="이미지" width="700"/>
+- NotificationListenerService를 이용해 로그 기록
+<img src="images/push-alarm-and-command.png" alt="이미지"/>
+<img src="images/push-alarm-emulator.png" alt="이미지"/>
+<img src="images/log-by-NotificationListenerService.png" alt="이미지"/>
 
 
 ### 진행 중인 일
