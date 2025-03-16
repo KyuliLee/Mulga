@@ -1,0 +1,106 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+class Bfs {
+	int i;
+	int j;
+	boolean flag;
+	
+	public Bfs(int i, int j, boolean flag) {
+		this.i = i;
+		this.j = j;
+		this.flag = flag;
+	}
+}
+
+public class Main {
+	
+	static char[][] arr;
+	static boolean[][] visit, visitf;
+	static int N, M, cnt, output;
+	
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer tokens = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(tokens.nextToken());
+		M = Integer.parseInt(tokens.nextToken());
+		arr = new char[N][M];
+		for (int i = 0; i < N; i++) {
+			arr[i] = br.readLine().toCharArray();
+		}
+		visit = new boolean[N][M];
+		visitf = new boolean[N][M];
+		Queue<Bfs> q = new LinkedList<>();
+		q.offer(new Bfs(0, 0, false));
+		cnt = 0;
+		output = -1;
+		outer:
+		while (!q.isEmpty()) {
+			cnt++;
+			int size = q.size();
+			for (int s = 0; s < size; s++) {
+				Bfs tmp = q.poll();
+				int i = tmp.i;
+				int j = tmp.j;
+				boolean flag = tmp.flag;
+				if (visit[i][j]) {
+					continue;
+				}
+				if (visitf[i][j] && flag) {
+					continue;
+				}
+				if (arr[i][j] == '1') {
+					if (flag) {
+						continue;
+					} else {
+						flag = true;
+					}
+				}
+				visitf[i][j] = true;
+				if (!flag) {
+					visit[i][j] = true;
+				}
+				if (i == N - 1 && j == M - 1) {
+					output = cnt;
+					break outer;
+				}
+				if (i - 1 >= 0) {
+					q.offer(new Bfs(i - 1, j, flag));
+				}
+				if (i + 1 < N) {
+					q.offer(new Bfs(i + 1, j, flag));
+				}
+				if (j - 1 >= 0) {
+					q.offer(new Bfs(i, j - 1, flag));
+				}
+				if (j + 1 < M) {
+					q.offer(new Bfs(i, j + 1, flag));
+				}
+			}
+		}
+		
+		dfs(0, 0, 1, false);
+		if (output == Integer.MAX_VALUE) {
+			output = -1;
+		}
+		System.out.println(output);
+	}
+	
+	static void dfs(int i, int j, int k, boolean flag) {
+		if (visit[i][j]) {
+			return;
+		}
+		if (arr[i][j] == '1') {
+			if (flag) {
+				return;
+			} else {
+				flag = true;
+			}
+		}
+		visit[i][j] = false;
+	}
+}
