@@ -2,14 +2,14 @@
 
 
 ### config 서버를 ci/cd 하기
-:white_check_mark:   Step 1. EC2에 컨테이너로 올리려는 config 서버가 로컬에서 실행되는지 확인했다.
-:white_large_square: Step 2. DOCKERFILE을 만든다.
+:white_check_mark:   Step 1. EC2에 컨테이너로 올리려는 config 서버가 로컬에서 실행되는지 확인했다.<br>
+:white_large_square: Step 2. DOCKERFILE을 만든다.<br>
 :white_large_square: Step 3. jenkins를 gitlab과 연결해서 ci/cd를 완료
-
+<br><br><br>
 
 ### ppt 자료를 만들기
 :white_check_mark: 팀원들과 야근을 하며 ppt 자료를 만들었다. 아직 개발을 시작하지 않은 상태여서 나는 발표 때 보여줄 화면을 피그마로 만들었다.
-
+<br><br><br>
 
 ### 알게된 것
 **ci/cd** 
