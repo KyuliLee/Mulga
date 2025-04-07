@@ -6,16 +6,18 @@ import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.Button
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.ilm.mulga.feature.component.main.MainScreen
 import com.ilm.mulga.feature.login.LoginScreen
+import com.ilm.mulga.feature.transaction_detail.TransactionAddScreen
 import com.ilm.mulga.ui.theme.MulGaTheme
 
 class MainActivity : ComponentActivity() {
@@ -28,19 +30,28 @@ class MainActivity : ComponentActivity() {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             })
         }
-        
+
         enableEdgeToEdge()
+
         setContent {
             MulGaTheme {
-                // 로그인 상태를 판단하는 예시 변수 (실제 구현에서는 ViewModel이나 Repository에서 처리)
                 var isLoggedIn by remember { mutableStateOf(false) }
+                val rootNavController = rememberNavController()
 
-                // 조건에 따라 화면 전환
                 if (isLoggedIn) {
-                    // 로그인된 경우: 네비게이션이 있는 메인 화면으로 이동
-                    MainScreen()
+                    NavHost(navController = rootNavController, startDestination = "main") {
+                        composable("main") {
+                            MainScreen(
+                                onNavigateToTransactionAdd = {
+                                    rootNavController.navigate("transaction_add")
+                                }
+                            )
+                        }
+                        composable("transaction_add") {
+                            TransactionAddScreen(navController = rootNavController)
+                        }
+                    }
                 } else {
-                    // 로그인되지 않은 경우: 로그인 화면 표시
                     LoginScreen(onLoginSuccess = { isLoggedIn = true })
                 }
             }
