@@ -5,6 +5,10 @@ val appModule = listOf(
     roomModule,
     homeModule,
     calendarModule,
+    transactionDetailModule,
     useCaseModule,
-    serviceModule
+    serviceModule,
+    loginModule,
+    mypageModule,
+    userLocalModule
 )

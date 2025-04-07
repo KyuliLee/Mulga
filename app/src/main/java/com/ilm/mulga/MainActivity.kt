@@ -7,18 +7,19 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.ilm.mulga.feature.component.dialog.GlobalErrorDialog
 import com.ilm.mulga.feature.component.main.MainScreen
 import com.ilm.mulga.feature.login.LoginScreen
+import com.ilm.mulga.feature.login.LoginUiState
 import com.ilm.mulga.feature.transaction_detail.TransactionAddScreen
 import com.ilm.mulga.ui.theme.MulGaTheme
+import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,27 +33,44 @@ class MainActivity : ComponentActivity() {
         }
 
         enableEdgeToEdge()
-
         setContent {
             MulGaTheme {
-                var isLoggedIn by remember { mutableStateOf(false) }
+                GlobalErrorDialog()
+                // LoginViewModel을 koin을 통해 주입받음
+                val loginViewModel: com.ilm.mulga.feature.login.LoginViewModel = koinViewModel()
+                val uiState by loginViewModel.uiState.collectAsState()
                 val rootNavController = rememberNavController()
 
-                if (isLoggedIn) {
-                    NavHost(navController = rootNavController, startDestination = "main") {
-                        composable("main") {
-                            MainScreen(
-                                onNavigateToTransactionAdd = {
-                                    rootNavController.navigate("transaction_add")
-                                }
-                            )
-                        }
-                        composable("transaction_add") {
-                            TransactionAddScreen(navController = rootNavController)
+                when (uiState) {
+                    is LoginUiState.Success -> {
+                        // Firebase에서 로그인 상태면 MainScreen 표시
+                        NavHost(navController = rootNavController, startDestination = "main") {
+                            composable("main") {
+                                MainScreen(
+                                    onNavigateToTransactionAdd = {
+                                        rootNavController.navigate("transaction_add")
+                                    }
+                                )
+                            }
+                            composable("transaction_add") {
+                                TransactionAddScreen(navController = rootNavController)
+                            }
                         }
                     }
-                } else {
-                    LoginScreen(onLoginSuccess = { isLoggedIn = true })
+                    is LoginUiState.NotLoggedIn,
+                    is LoginUiState.Initial,
+                    is LoginUiState.Error -> {
+                        // 로그인되지 않은 상태면 LoginScreen 표시
+                        LoginScreen(onLoginSuccess = {
+                            // 실제 로그인은 ViewModel의 signInWithCredential 호출로 진행
+                            // 예시: 구글 로그인 버튼 클릭 시 Google 로그인 플로우를 시작하고,
+                            // 성공 시 signInWithCredential을 호출하도록 처리합니다.
+                        })
+                    }
+                    is LoginUiState.Loading -> {
+                        // 로딩 상태일 때 로딩 화면을 표시하거나 ProgressIndicator를 띄울 수 있음
+                        // LoadingScreen()
+                    }
                 }
             }
         }
