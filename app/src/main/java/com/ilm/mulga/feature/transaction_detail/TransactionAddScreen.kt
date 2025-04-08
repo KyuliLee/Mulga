@@ -6,15 +6,20 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -73,6 +78,12 @@ fun TransactionAddScreen(navController: NavController) {
     val viewModel: TransactionAddViewModel = viewModel()
     val isSuccess by viewModel.isSuccess
 
+    val formattedAmount = remember(amount) {
+        amount.toLongOrNull()?.let {
+            "%,d".format(it)
+        } ?: ""
+    }
+
     LaunchedEffect(isSuccess) {
         if (isSuccess) {
             navController.popBackStack()
@@ -103,12 +114,53 @@ fun TransactionAddScreen(navController: NavController) {
                     titleContentColor = MulGaTheme.colors.grey1
                 )
             )
+        },
+        bottomBar = {
+            val insets = WindowInsets.navigationBars.asPaddingValues()
+            Button(
+                onClick = {
+                    isAmountError = amount.isBlank()
+                    isCategoryError = selectedCategory == null
+                    isPaymentError = payment.isBlank()
+
+                    if (isAmountError || isCategoryError || isPaymentError) return@Button
+
+                    viewModel.submitTransaction(
+                        title = title,
+                        cost = if (selectedToggleIndex == 0) -amount.toInt() else amount.toInt(),
+                        category = selectedCategory?.backendKey ?: "",
+                        vendor = vendor,
+                        paymentMethod = payment,
+                        dateTime = selectedDateTime,
+                        memo = memo
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = 24.dp,
+                        end = 24.dp,
+                        bottom = 24.dp + insets.calculateBottomPadding()
+                    )
+                    .height(48.dp),
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MulGaTheme.colors.primary,
+                    contentColor = MulGaTheme.colors.white1
+                )
+            ) {
+                Text(
+                    text = "완료",
+                    style = MulGaTheme.typography.bodyLarge
+                )
+            }
         }
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
                 .background(MulGaTheme.colors.white1)
                 .padding(horizontal = 24.dp)
         ) {
@@ -156,9 +208,10 @@ fun TransactionAddScreen(navController: NavController) {
                 )
 
                 UnderlinedTextField(
-                    value = amount,
+                    value = formattedAmount,
                     onValueChange = {
-                        amount = it.filter { it.isDigit() }
+                        val digitsOnly = it.replace(",", "").filter { c -> c.isDigit() }
+                        amount = digitsOnly
                         isAmountError = false
                     },
                     placeholder = "금액",
@@ -288,42 +341,6 @@ fun TransactionAddScreen(navController: NavController) {
                     maxLines = 5
                 )
             })
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Button(
-                onClick = {
-                    isAmountError = amount.isBlank()
-                    isCategoryError = selectedCategory == null
-                    isPaymentError = payment.isBlank()
-
-                    if (isAmountError || isCategoryError || isPaymentError) return@Button
-
-                    viewModel.submitTransaction(
-                        title = title,
-                        cost = if (selectedToggleIndex == 0) -amount.toInt() else amount.toInt(),
-                        category = selectedCategory?.backendKey ?: "",
-                        vendor = vendor,
-                        paymentMethod = payment,
-                        dateTime = selectedDateTime,
-                        memo = memo
-                    )
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 24.dp)
-                    .height(48.dp),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MulGaTheme.colors.primary,
-                    contentColor = MulGaTheme.colors.white1
-                )
-            ) {
-                Text(
-                    text = "완료",
-                    style = MulGaTheme.typography.bodyLarge
-                )
-            }
         }
 
         if (isCategoryModalVisible) {
